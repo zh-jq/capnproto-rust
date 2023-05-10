@@ -1630,6 +1630,7 @@ fn generate_get_annotation_types(
         _ => (),
     }
 
+    let no_read_impl = branches.is_empty();
     let body = if branches.is_empty() {
         Line("panic!(\"invalid annotation indices ({:?}, {}) \", child_index, index)".into())
     } else {
@@ -1643,7 +1644,7 @@ fn generate_get_annotation_types(
         ])))
     };
 
-    if !node_reader.get_is_generic() {
+    if !node_reader.get_is_generic() || no_read_impl {
         Ok(Branch(vec![
             Line(fmt!(ctx,"pub fn get_annotation_types(child_index: Option<u16>, index: u32) -> {capnp}::introspect::Type {{")),
             Indent(Box::new(body)),
